@@ -1,6 +1,6 @@
-function [next_state] = process(state, deltaT, time_step)
+function [next_state] = process(state, deltaT, time_step, start_time)
 
-roomba_angular_velocity = 
+roomba_angular_velocity = 0.066
 speed = 0.33
 bumperAngle = 2.44346
 obstacle_angular_velocity = 0.066
@@ -8,68 +8,66 @@ radius = 1
 
 robots = [state.target_robots, state.obstacle_robots]
 
-for 0:time_step:deltaT
-    for i=1:robots
+for t=start_time:time_step:start_time + deltaT
+    
+    %check for collisions
+    for i=1:length(robots)
         if i ~= length(robots)
-            for j=i+1:robots
+            for j=i+1:length(robots)
                 distance = sqrt( (robots(i).state(1) - robots(j).state(1))^2 + (robots(i).state(2) - robots(j).state(2))^2 )
                 if distance <= 2*radius 
                     % robot i is left of robot j
-                    if robots(i).state(1) <= robots(j).state(1)
-                        if pi - bumperAngle/2 <= abs(robots(i).state(3) - robots(j).state(3)) <= pi + bumperAngle/2 
-                            if robots(i).state(3) - robots(j).state(3) <= 0
-                               % front end collision
-                               
-                            else
-                               
-                               %no collision facing opppsite directions
-                               break
-                                
-                            end
-                            
+                    if detectCollision(robots(i),robots(j),0,bumperAngle) == true && robots(i).collidedThisTimeStep == false
+                        robots(i).collidedThisTimeStep = true;
+                        if class(robots(i)) == 'TargetRobot'
+                            robots(i).rotating = robots(i).rotating + -pi/roomba_angular_velocity
+                           state.target_robots(i) = robots(i)
                         else
-                            
-                            %rear end collision
-                             if robots(i).state(3) - robots(j).state(3) <= 0
-                                %robot i crashed into robot j
-                            else
-                                %robot j crashed into robot i
-                            end
-                        
+                            robots(i).paused = robots(i).paused + -pi/roomba_angular_velocity
+                            state.obstacle_robots(i - length(state.target_robots)) = robots(i)
                         end
-                        
-                     %robot i is right of robot j  
-                    else
-                        if pi - bumperAngle/2 <= abs(robots(i).state(3) - robots(j).state(3)) <= pi + bumperAngle/2 
-                            if robots(i).state(3) - robots(j).state(3) >= 0
-                               % front end collision
-                               
-                            else
-                               
-                               %no collision facing opppsite directions
-                               break
-                                
-                            end
-                            
+                    end
+                    if detectCollision(robots(j),robots(i),0,bumperAngle) == true && robots(j).collidedThisTimeStep == false
+                        robots(j).collidedThisTimeStep = true;
+                        if class(robots(j)) == 'TargetRobot'
+                            robots(j).rotating = robots(j).rotating + -pi/roomba_angular_velocity
+                            state.target_robots(j) = robots(j)
                         else
-                            %rear end collision
-                            if robots(i).state(3) - robots(j).state(3) >= 0
-                                %robot i crashed into robot j
-                            else
-                                %robot j crashed into robot i
-                            end
-                            
-                        
+                            robots(j).paused = robots(j).paused + -pi/roomba_angular_velocity
+                            state.obstacle_robots(j - length(state.target_robots)) = robots(j)
                         end
-                        
                     end
                 end
             end
         end
     end
+    
+    for target=1:length(state.target_robots)
+        if state.target_robots(target).state(1) >= 10 || state.target_robots(target).state(2) >=10 || state.target_robots(target).state(2) <= -10 || state.target_robots(target).state(1) <= -10 
+            continue
+        end
+        if mod(t,20) == 0
+            state.target_robots(target).rotating = state.target_robots(target).rotating + -pi/roomba_angular_velocity
+        end
+        if state.target_robots(target).rotating ~= 0
+             state.target_robots(target) = rotate(state.target_robots(target),time_step,roomba_angular_velocity)
+             continue
+        end
+        state.target_robots(target)= moveForward(state.target_robots(target),speed,time_step)
+    end
+  
+    for obstacle=1:length(state.obstacle_robots)
+        if state.obstacle_robots(obstacle).paused ~= 0
+             state.obstacle_robots(obstacle) = obstaclePause(state.obstacle_robots(obstacle),time_step)
+             continue
+        end
+        state.obstacle_robots(obstacle)= obstacleMove(state.obstacle_robots(obstacle),obstacle_angular_velocity,speed,time_step)
+    end
+    
+
 end
 
-    
+next_state = state;
 
 end
 
