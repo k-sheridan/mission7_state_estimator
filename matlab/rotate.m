@@ -1,5 +1,5 @@
 function [] = rotate(roomba,deltaT,angularVelocity)
     roomba.rotating = roomba.rotating - deltaT
-    roomba.theta = roomba.theta + angularVelocity(deltaT)
+    roomba.state(3) = roomba.state(3) + angularVelocity(deltaT)
 end
 

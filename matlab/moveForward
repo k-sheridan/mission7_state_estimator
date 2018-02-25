@@ -1,6 +1,6 @@
-function [] = moveForward(roomba,speed,deltaT)
+function [roomba] = moveForward(roomba,speed,deltaT)
     magnitude = deltaT * speed
-    roomba.x = roomba.x + cos(roomba.theta) * magnitude
-    roomba.y = roomba.y + sin(roomba.theta) * magnitude
+    roomba.state(1) = roomba.state(1) + cos(roomba.state(3)) * magnitude
+    roomba.state(2) = roomba.state(2) + sin(roomba.state(3)) * magnitude
 end
 
