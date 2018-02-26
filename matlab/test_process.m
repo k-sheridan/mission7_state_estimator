@@ -13,6 +13,5 @@ x = State;
 x.target_robots = targets;
 x.obstacle_robots = obstacles;
 
-y = process(x,10,0.3,19)
+y = process(x,10,0.3,19);
 
-drawState(y);

@@ -1,9 +1,9 @@
 function [next_state] = process(state, deltaT, time_step, start_time)
 
-roomba_angular_velocity = 0.066
+roomba_angular_velocity = -1
 speed = 0.33
 bumperAngle = 2.44346
-obstacle_angular_velocity = 0.066
+obstacle_angular_velocity = -1
 radius = 1
 
 robots = [state.target_robots, state.obstacle_robots]
@@ -21,26 +21,44 @@ for t=start_time:time_step:start_time + deltaT
                         robots(i).collidedThisTimeStep = true;
                         if class(robots(i)) == 'TargetRobot'
                             robots(i).rotating = robots(i).rotating + -pi/roomba_angular_velocity
-                            state.target_robots(state.target_robots.find(robots(i))) = robots(i)
+                           state.target_robots(i) = robots(i)
                         else
                             robots(i).paused = robots(i).paused + -pi/roomba_angular_velocity
-                            state.obstacle_robots(state.target_robots.find(robots(i))) = robots(i)
+                            state.obstacle_robots(i - length(state.target_robots)) = robots(i)
                         end
                     end
                     if detectCollision(robots(j),robots(i),0,bumperAngle) == true && robots(j).collidedThisTimeStep == false
                         robots(j).collidedThisTimeStep = true;
                         if class(robots(j)) == 'TargetRobot'
                             robots(j).rotating = robots(j).rotating + -pi/roomba_angular_velocity
-                            state.target_robots(state.target_robots.find(robots(j))) = robots(j)
+                            state.target_robots(j) = robots(j)
                         else
                             robots(j).paused = robots(j).paused + -pi/roomba_angular_velocity
-                            state.obstacle_robots(find(state.target_robots == robots(j)))) = robots(j)
+                            state.obstacle_robots(j - length(state.target_robots)) = robots(j)
                         end
                     end
                 end
             end
         end
     end
+for reset=1:length(robots)
+disp(robots(reset))
+robots(reset).collidedThisTimeStep = false
+if class(robots(reset)) == 'TargetRobot'
+if robots(reset).rotating < 0
+robots(reset).rotating=0
+end
+state.target_robots(reset) = robots(reset)
+else
+                if robots(reset).paused < 0
+                    robots(reset).paused=0
+                end
+                state.obstacle_robots(reset - length(state.target_robots)) = robots(reset)
+                
+            end
+     end
+    
+    
     
     for target=1:length(state.target_robots)
         if state.target_robots(target).state(1) >= 10 || state.target_robots(target).state(2) >=10 || state.target_robots(target).state(2) <= -10 || state.target_robots(target).state(1) <= -10 
@@ -64,7 +82,7 @@ for t=start_time:time_step:start_time + deltaT
         state.obstacle_robots(obstacle)= obstacleMove(state.obstacle_robots(obstacle),obstacle_angular_velocity,speed,time_step)
     end
     
-    drawState(state);
+
 end
 
 next_state = state;

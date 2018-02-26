@@ -9,7 +9,7 @@ classdef State
     
     methods
         function obj = State()
-            obj.quad_state = zeros(15, 1)
+            obj.quad_state = zeros(15, 1);
             
         end
     end
