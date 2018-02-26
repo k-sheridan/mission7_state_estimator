@@ -62,7 +62,7 @@ for t=start_time:time_step:start_time + deltaT
         if state.target_robots(target).state(1) >= 10 || state.target_robots(target).state(2) >=10 || state.target_robots(target).state(2) <= -10 || state.target_robots(target).state(1) <= -10 
             continue;
         end
-        if mod(t,20) == 0
+        if rem(t,20) >= 0 && rem(t,20) < time_step
             state.target_robots(target).rotating = state.target_robots(target).rotating + -pi/roomba_angular_velocity;
         end
         if state.target_robots(target).rotating ~= 0
@@ -81,7 +81,6 @@ for t=start_time:time_step:start_time + deltaT
         state.obstacle_robots(obstacle)= obstacleMove(state.obstacle_robots(obstacle),obstacle_angular_velocity,speed,time_step);
     end
     
-    drawState(state);
 
 end
 
