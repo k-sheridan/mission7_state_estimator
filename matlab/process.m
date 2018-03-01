@@ -1,33 +1,33 @@
 function [next_state] = process(state, deltaT, time_step, start_time)
 
-roomba_angular_velocity = -0.066;
+roomba_angular_velocity = -pi/2;
 speed = 0.33;
 bumperAngle = 2.44346;
 obstacle_angular_velocity = -0.066;
-radius = 1;
+radius = 0.17018;
 
-robots = [state.target_robots, state.obstacle_robots];
+robots = [state.target_robots, state.obstacle_robots]
 
-for t=start_time:time_step:start_time + deltaT
-    
+for t=time_step:time_step:deltaT
     %check for collisions
     for i=1:length(robots)
         if i ~= length(robots)
             for j=i+1:length(robots)
-                distance = sqrt( (robots(i).state(1) - robots(j).state(1))^2 + (robots(i).state(2) - robots(j).state(2))^2 );
-                if distance <= 2*radius 
+                distance = norm(robots(i).state(1:2, 1) - robots(j).state(1:2, 1));
+                if distance <= 2*radius
+                    
                     % robot i is left of robot j
-                    if detectCollision(robots(i),robots(j),0,bumperAngle) == true && robots(i).collidedThisTimeStep == false
+                    if detectCollision(robots(i),robots(j),pi/2) == true && robots(i).collidedThisTimeStep == false 
                         robots(i).collidedThisTimeStep = true;
                         if strcmp(class(robots(i)),'TargetRobot') == true
-                            robots(i).rotating = robots(i).rotating + -pi/roomba_angular_velocity;
+                           robots(i).rotating = robots(i).rotating + -pi/roomba_angular_velocity;
                            state.target_robots(i) = robots(i);
                         else
                             robots(i).paused = robots(i).paused + -pi/roomba_angular_velocity;
                             state.obstacle_robots(i - length(state.target_robots)) = robots(i);
                         end
                     end
-                    if detectCollision(robots(j),robots(i),0,bumperAngle) == true && robots(j).collidedThisTimeStep == false
+                    if detectCollision(robots(j),robots(i),pi/2) == true && robots(j).collidedThisTimeStep == false 
                         robots(j).collidedThisTimeStep = true;
                         if strcmp(class(robots(j)),'TargetRobot') == true
                             robots(j).rotating = robots(j).rotating + -pi/roomba_angular_velocity;
@@ -47,6 +47,7 @@ for t=start_time:time_step:start_time + deltaT
             if robots(reset).rotating < 0
                 robots(reset).rotating=0;
             end
+            robots(reset).state(4) = robots(reset).state(4) + time_step;
             state.target_robots(reset) = robots(reset);
         else
             if robots(reset).paused < 0
@@ -62,15 +63,14 @@ for t=start_time:time_step:start_time + deltaT
         if state.target_robots(target).state(1) >= 10 || state.target_robots(target).state(2) >=10 || state.target_robots(target).state(2) <= -10 || state.target_robots(target).state(1) <= -10 
             continue;
         end
-        if rem(t,20) >= 0 && rem(t,20) < time_step
+        if state.target_robots(target).state(4) >= 20 && mod(state.target_robots(target).state(4),20) <= time_step
             state.target_robots(target).rotating = state.target_robots(target).rotating + -pi/roomba_angular_velocity;
         end
         if state.target_robots(target).rotating ~= 0
-             state.target_robots(target) = rotate(state.target_robots(target),time_step,roomba_angular_velocity);
+             state.target_robots(target) = rotateRoomba(state.target_robots(target),time_step,roomba_angular_velocity);
              continue;
         end
         state.target_robots(target)= moveForward(state.target_robots(target),speed,time_step);
-        disp(state.target_robots(target))
     end
   
     for obstacle=1:length(state.obstacle_robots)
@@ -81,7 +81,7 @@ for t=start_time:time_step:start_time + deltaT
         state.obstacle_robots(obstacle)= obstacleMove(state.obstacle_robots(obstacle),obstacle_angular_velocity,speed,time_step);
     end
     
-
+    
 end
 
 next_state = state;

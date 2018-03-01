@@ -1,11 +1,11 @@
 function [bool] = detectCollision(roomba1,roomba2,bound)
-    if strcmp(class(roomba1),'TargetRobot') == true
-        if(roomba1.rotating ~= 0)
+    if strcmp(roomba1,'TargetRobot') == true
+        if(roomba1.rotating == 0)
             bool = false;
             return
         end
     else
-        if(roomba1.paused ~= 0)
+        if(roomba1.paused == 0)
             bool = false;
             return
         end
