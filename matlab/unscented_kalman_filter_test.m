@@ -12,11 +12,19 @@ x = State;
 
 x.target_robots = targets;
 x.obstacle_robots = obstacles;
+ 
+dt = 0.1;
 
-for
+thetaUncertainty = (pi/20)^2;
+timerUncetainty = 100;
+xUncertainty = 0;
+yUncertainty = 0;
 
-y = process(x,2,0.1,19);
+initCovarainceMatrix = 
 
-drawState(y);
-
+for t = (0:dt:120)
+   x = process(x,dt,0.1);
+   drawState(x); 
+   t
+end
 
