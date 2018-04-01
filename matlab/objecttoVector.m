@@ -1,5 +1,9 @@
 function [stateVector] = objecttoVector(state)
-    vector = [];
-    for element=state.target_robots
-    
+    stateVector = [];
+    for target=state.target_robots
+        stateVector = [vector; target.state.'];
+    end 
+    for obstacle=state.obstacle_robots
+        stateVector = [vector; obstacle.state.'];
+    end
 end
