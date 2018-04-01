@@ -57,10 +57,6 @@ function h = plotGaussianEllipsoid(C, m, sdwidth, npts, axh)
 %    - NARGOUT==0 check added.
 %    - Help added on NPTS for ellipsoids
 
-axis([-8 8 0 8 0 1])
- view(0,90)
-  pbaspect([2 1 1])
-
 if ~exist('sdwidth', 'var'), sdwidth = 1; end
 if ~exist('npts', 'var'), npts = []; end
 if ~exist('axh', 'var'), axh = gca; end

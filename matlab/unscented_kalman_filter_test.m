@@ -17,14 +17,25 @@ dt = 0.1;
 
 thetaUncertainty = (pi/20)^2;
 timerUncetainty = 100;
-xUncertainty = 0;
-yUncertainty = 0;
+xUncertainty = 0.25;
+yUncertainty = 0.25;
+diagArray=[];
+for i = 1:16
+    if i<=10
+        diagArray=[diagArray [xUncertainty,yUncertainty,thetaUncertainty,timerUncetainty]];
+    else
+        diagArray = [diagArray [xUncertainty,yUncertainty,thetaUncertainty]];
+    end
+end
 
-initCovarainceMatrix = 
+
+                        
+
+initCovarianceMatrix = diag(diagArray);
 
 for t = (0:dt:120)
    x = process(x,dt,0.1);
-   drawState(x); 
+   drawState(x,initCovarianceMatrix); 
    t
 end
 
