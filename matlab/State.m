@@ -3,7 +3,7 @@ classdef State
     
     properties
         quad_state; %COLUMN x, y, z, r, p, y, dx, dy, dz, wx, wy, wz, ax, ay, az
-        target_robots; %VECTOR of target robot state 
+        target_robots; %VECTOR of target robots
         obstacle_robots; %VECTOR of obstacle robots
     end
     

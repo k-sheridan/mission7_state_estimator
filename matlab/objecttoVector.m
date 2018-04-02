@@ -1,9 +1,10 @@
 function [stateVector] = objecttoVector(state)
     stateVector = [];
     for target=state.target_robots
-        stateVector = [vector; target.state.'];
+        stateVector = [stateVector; target.state];
     end 
     for obstacle=state.obstacle_robots
-        stateVector = [vector; obstacle.state.'];
+        stateVector = [stateVector; obstacle.state];
     end
+    size(stateVector)
 end
