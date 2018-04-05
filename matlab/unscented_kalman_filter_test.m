@@ -25,7 +25,7 @@ timerUncetainty = 100;
 xUncertainty = 0.25;
 yUncertainty = 0.25;
 diagArray=[];
-for j = 1:16
+for j = 1:14
     if j<=10
         diagArray=[diagArray [xUncertainty,yUncertainty,thetaUncertainty,timerUncetainty]];
     else
@@ -43,6 +43,7 @@ lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatri
 for t = (0:dt:120)
    x = process(x,dt,0.1);
    sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
+   size(sigmaPoints)
    for point=sigmaPoints
     drawState(point,initCovarianceMatrix); 
    end
