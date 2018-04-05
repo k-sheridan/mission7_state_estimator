@@ -16,6 +16,24 @@ find_package(catkin REQUIRED COMPONENTS
   tf
 )
 
+
+find_package(OpenCV REQUIRED)
+
+find_package(Eigen3 REQUIRED)
+
+find_package(sophus REQUIRED)
+
+
+include_directories(
+	${OpenCV_INCLUDE_DIRS}
+	include
+	include/invio
+	/usr/include/eigen3
+	${catkin_INCLUDE_DIRS}
+	${Eigen_INCLUDE_DIRS}
+	${sophus_INCLUDE_DIRS}
+)
+
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -26,7 +44,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES mission7_state_estimator
 #  CATKIN_DEPENDS geometry_msgs nav_msgs roscpp sensor_msgs std_msgs tf
 #  DEPENDS system_lib
@@ -36,12 +54,8 @@ catkin_package(
 ## Build ##
 ###########
 
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
-)
 
+add_library(mission7_state_estimator_types include/mission7_state_estimator/Types.h)
+set_target_properties(mission7_state_estimator_types PROPERTIES LINKER_LANGUAGE CXX)
 
 add_execultable(state_estimation_node src/state_estimation_node)
