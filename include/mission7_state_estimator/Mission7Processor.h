@@ -8,6 +8,10 @@
 */
 class Mission7Processor{
 
+  Mission7State process(Mission7State state, double dt);
+
+  Mission7State processAndPropagateUncertainty(Mission7State state, double dt);
+
 };
 
 #endif
