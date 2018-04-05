@@ -16,7 +16,6 @@ function [] = drawState(state, covarianceMatrix)
             plotGaussianEllipsoid(covarianceMatrix(n:n+1,n:n+1),[state.target_robots(j).state(1), state.target_robots(j).state(2)])
         elseif j == length(state.target_robots) + 1
             n = 1 + 4*(j-1);
-            covarianceMatrix(n:n+1,n:n+1)
             plotGaussianEllipsoid(covarianceMatrix(n:n+1,n:n+1),[state.obstacle_robots(1).state(1), state.obstacle_robots(1).state(2)])
         else
             o = j - length(state.target_robots);

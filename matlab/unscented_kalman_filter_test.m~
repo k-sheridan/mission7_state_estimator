@@ -1,7 +1,6 @@
 speed = 0.33;
-alpha = 0.99;
-beta =2;
-k = 165;
+alpha = 0.5;
+k = 1;
 
 
 
@@ -38,11 +37,11 @@ end
 
 initCovarianceMatrix = diag(diagArray);
 
-lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1);
+lambda = 0.25(
 
 for t = (0:dt:120)
    x = process(x,dt,0.1);
-   sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
+   sigmaPoints = calcSigmaPoints(initCovarianceMatrix,1,x);
    for point=sigmaPoints
     drawState(point,initCovarianceMatrix); 
    end
