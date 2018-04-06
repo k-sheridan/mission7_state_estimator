@@ -41,13 +41,11 @@ initCovarianceMatrix = diag(diagArray);
 lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1);
 
 for t = (0:dt:120)
-   x = process(x,dt,0.1);
    sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
-   size(sigmaPoints)
-   for point=sigmaPoints
-    drawState(point,initCovarianceMatrix); 
-   end
-   t
+   weights = generateWeights(lambda,alpha,beta,size(initCovarianceMatrix,1));
+   x = unscentedTransformMean(weights,sigmaPoints);
+   initCovarianceMatrix = unscentedTransform(weights,sigmaPoints);
+   drawState(x,initCovarianceMatrix)
 end
 
 
