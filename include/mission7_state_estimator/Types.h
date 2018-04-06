@@ -35,6 +35,19 @@ private:
 
 public:
 
+/*
+* ORDER: QUAD, OBSTACLE, TARGETS
+*/
+  Eigen::Matrix<double, Eigen::Dynamic, 1> toStateVector(){
+
+  }
+
+  void fromStateVector(Eigen::Matrix<double, Eigen::Dynamic, 1> vec){
+    // make sure that you don't add extra variables somehow
+    ROS_ASSERT(vec.rows() == QUAD_STATE_SIZE + obstacle_states.size()*OBSTACLE_STATE_SIZE + target_states.size()*TARGET_STATE_SIZE);
+
+
+  }
 
 
 };
