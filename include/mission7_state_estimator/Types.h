@@ -39,12 +39,30 @@ public:
 * ORDER: QUAD, OBSTACLE, TARGETS
 */
   Eigen::Matrix<double, Eigen::Dynamic, 1> toStateVector(){
+    Eigen::Matrix<double, Eigen::Dynamic, 1> state;
 
+    int dimensions = QUAD_STATE_SIZE + obstacle_states.size()*OBSTACLE_STATE_SIZE + target_states.size()*TARGET_STATE_SIZE;
+    state.resize(dimensions, 1); // allocate all of the dimensions
+
+    // set the quad part
+    state.block<QUAD_STATE_SIZE, 1>(0, 0) = quad_state.mean;
+
+    // set each of the obstacles
+    for(int i = 0; i < obstacle_states.size(); i++){
+      state.block<OBSTACLE_STATE_SIZE, 1>(QUAD_STATE_SIZE + i * OBSTACLE_STATE_SIZE, 0) = obstacle_states.at(i).mean;
+    }
+
+    //set each of the target states
+    int start_row = QUAD_STATE_SIZE + obstacle_states.size() * OBSTACLE_STATE_SIZE;
+    for(int i = 0; i < target_states.size(); i++){
+      state.block<TARGET_STATE_SIZE, 1>(start_row + i * TARGET_STATE_SIZE) = target_states.at(i).mean;
+    }
   }
 
   void fromStateVector(Eigen::Matrix<double, Eigen::Dynamic, 1> vec){
     // make sure that you don't add extra variables somehow
-    ROS_ASSERT(vec.rows() == QUAD_STATE_SIZE + obstacle_states.size()*OBSTACLE_STATE_SIZE + target_states.size()*TARGET_STATE_SIZE);
+    int dimensions = QUAD_STATE_SIZE + obstacle_states.size()*OBSTACLE_STATE_SIZE + target_states.size()*TARGET_STATE_SIZE;
+    ROS_ASSERT(vec.rows() == dimensions);
 
 
   }
