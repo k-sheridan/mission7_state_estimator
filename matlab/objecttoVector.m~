@@ -1,12 +1,14 @@
 function [stateVector] = objecttoVector(state)
     stateVector = [];
-    targets = 1;
+    count = 1;
     for target=state.target_robots
         stateVector = [stateVector; target.state];
+        count
+        count = count+1;
     end 
-    targets = size(stateVector)
+    count = 0
     for obstacle=state.obstacle_robots
         stateVector = [stateVector; obstacle.state];
+        count
     end
-    obstacles = size(stateVector)
 end
