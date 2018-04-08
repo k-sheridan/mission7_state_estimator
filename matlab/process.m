@@ -6,7 +6,7 @@ bumperAngle = 2.44346;
 obstacle_angular_velocity = -0.066;
 radius = 0.17018;
 
-robots = [state.target_robots, state.obstacle_robots]
+robots = [state.target_robots, state.obstacle_robots];
 
 for t=time_step:time_step:deltaT
     %check for collisions

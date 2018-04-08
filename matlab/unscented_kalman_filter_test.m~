@@ -1,7 +1,7 @@
 speed = 0.33;
-alpha = 0.99;
+alpha = 0.1;
 beta =2;
-k = 165;
+k = 0;
 
 
 
@@ -39,19 +39,17 @@ sizeX=size(objecttoVector(x))
 
 lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1);
 
-for t = (0:dt:120)
+
    sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
-   for j=1:length(sigmaPoints)
-       sigmaPoints(j) = process(sigmaPoints(j),dt,dt);
-       isreal(sig
-   end
-   weights = generateWeights(lambda,alpha,beta,size(initCovarianceMatrix,1));
-   weightSize = size(weights)
-   newState = unscentedTransformMean(weights,sigmaPoints);
-   newState = vectortoObject(newState,x);
-   initCovarianceMatrix = unscentedTransform(weights,sigmaPoints);
-   drawState(newState,initCovarianceMatrix);
-end
+   %for j=1:length(sigmaPoints)
+       %sigmaPoints(j) = process(sigmaPoints(j),dt,dt);
+   %end
+   %weights = generateWeights(lambda,alpha,beta,size(initCovarianceMatrix,1));
+   %weightSize = size(weights)
+   %newState = unscentedTransformMean(weights,sigmaPoints);
+   %newState = vectortoObject(newState,x);
+   %initCovarianceMatrix = unscentedTransform(weights,sigmaPoints);
+   drawState(x,initCovarianceMatrix);
 
 
 

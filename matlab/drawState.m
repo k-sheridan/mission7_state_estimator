@@ -1,4 +1,4 @@
-function [] = drawState(state, covarianceMatrix)
+function [] = drawState(state, covarianceMatrix,sigmaPoints)
     clf;
     hold on;
     
@@ -23,6 +23,15 @@ function [] = drawState(state, covarianceMatrix)
             plotGaussianEllipsoid(covarianceMatrix(n:n+1,n:n+1),[state.obstacle_robots(o).state(1), state.obstacle_robots(o).state(2)])
         end
         
+    end
+    for point=sigmaPoints
+       for element=point.target_robots
+            quiver(element.state(1),element.state(2),cos(element.state(3)),sin(element.state(3)),'linewidth',1,'MaxHeadSize',0.5);
+       end
+    
+        for element=point.obstacle_robots
+            quiver(element.state(1),element.state(2),cos(element.state(3)),sin(element.state(3)),'linewidth',1,'MaxHeadSize',0.5);
+        end 
     end
     
     xlim([-10, 10]);

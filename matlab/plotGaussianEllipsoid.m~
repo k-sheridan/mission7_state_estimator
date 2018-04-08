@@ -92,13 +92,10 @@ tt=linspace(0,2*pi,npts)';
 x = cos(tt); y=sin(tt);
 ap = [x(:) y(:)]';
 [v,d]=eig(C);
-d = sdwidth * sqrt(abs(d)); % convert variance to sdwidth*sd
-d = real(d);
-vReal = isreal(v);
-dReal = isreal(d);
-apReal = isreal(ap);
-meansReal = isreal(means);
-apReal = isreal(ap);
+d = sdwidth * sqrt(d); % convert variance to sdwidth*sd
+vReal = isreal(v)
+dReal = isreal(d)
+apReal = isre
 bp = (v*d*ap) + repmat(means, 1, size(ap,2)); 
 h = plot(bp(1,:), bp(2,:), '-', 'parent', axh);
 

@@ -45,11 +45,11 @@ lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatri
        sigmaPoints(j) = process(sigmaPoints(j),dt,dt);
    end
    weights = generateWeights(lambda,alpha,beta,size(initCovarianceMatrix,1));
-   weightSize = size(weights)
+   weightSize = size(weights);
    newState = unscentedTransformMean(weights,sigmaPoints);
    newState = vectortoObject(newState,x);
    initCovarianceMatrix = unscentedTransform(weights,sigmaPoints);
-   drawState(newState,initCovarianceMatrix);
+   drawState(newState,initCovarianceMatrix,sigmaPoints);
 
 
 
