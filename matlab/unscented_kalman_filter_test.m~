@@ -1,5 +1,5 @@
 speed = 0.33;
-alpha = 0.1;
+alpha = 0.3;
 beta =2;
 k = 0;
 
@@ -37,19 +37,22 @@ initCovarianceMatrix = diag(diagArray);
 sizeCovariance = size(initCovarianceMatrix)
 sizeX=size(objecttoVector(x))
 
-lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1);
+lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1)
 
 
    sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
-   %for j=1:length(sigmaPoints)
-       %sigmaPoints(j) = process(sigmaPoints(j),dt,dt);
-   %end
-   %weights = generateWeights(lambda,alpha,beta,size(initCovarianceMatrix,1));
-   %weightSize = size(weights)
-   %newState = unscentedTransformMean(weights,sigmaPoints);
-   %newState = vectortoObject(newState,x);
-   %initCovarianceMatrix = unscentedTransform(weights,sigmaPoints);
-   drawState(x,initCovarianceMatrix);
+   for j=1:length(sigmaPoints)
+       sigmaPoints(j) = process(sigmaPoints(j),dt,dt);
+   end
+   weights = generateWeights(lambda,alpha,beta,size(initCovarianceMatrix,1))
+   y = weights(2);
+   for l=2:sigmaPoints
+       
+   end
+   newState = unscentedTransformMean(weights,sigmaPoints);
+   newState = vectortoObject(newState,x);
+   initCovarianceMatrix = unscentedTransform(weights,sigmaPoints);
+   drawState(newState,initCovarianceMatrix,sigmaPoints);
 
 
 

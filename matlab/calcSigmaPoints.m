@@ -3,7 +3,6 @@ function [sigmaPoints] = calcSigmaPoints(covarianceMatrix,scalingParam,state)
     stateVector =  objecttoVector(state);
     squareRoot = real(sqrtm((size(covarianceMatrix,1)+scalingParam)*covarianceMatrix));
     for row=squareRoot.'
-        row
         sigmaPoints = [sigmaPoints, vectortoObject(stateVector + row.',state),vectortoObject(stateVector - row.',state)];
     end
 end
