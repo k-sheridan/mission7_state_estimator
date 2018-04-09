@@ -8,7 +8,7 @@ function [state] = vectortoObject(vector,lastState)
    n = 4*j +1;
    for j=1:length(lastState.obstacle_robots)
        obstacles = [obstacles, ObstacleRobot([vector(n);vector(n+1);vector(n+2)],lastState.obstacle_robots(j).paused,lastState.obstacle_robots(j).roombaID)];
-       n = n+2;
+       n = n+3;
    end
    state.target_robots = targets;
    state.obstacle_robots = obstacles;

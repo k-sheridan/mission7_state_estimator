@@ -42,7 +42,7 @@ lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatri
 
    sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
    for j=1:length(sigmaPoints)
-       sigmaPoints(j) = process(sigmaPoints(j),dt,dt);
+       sigmaPoints(j) = process(sigmaPoints(j),10,dt);
    end
    weights = generateWeights(lambda,alpha,beta,size(initCovarianceMatrix,1))
    y = weights(2);
