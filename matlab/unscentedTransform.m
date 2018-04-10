@@ -1,9 +1,10 @@
 function [covariance] = unscentedTransform(weights,sigmaPoints)
     initCovarianceWeight = weights(2);
     meanVector = unscentedTransformMean(weights,sigmaPoints);
-    covariance = initCovarianceWeight * (objecttoVector(sigmaPoints(1))-meanVector) * (objecttoVector(sigmaPoints(1))-meanVector).';
+    covariance = initCovarianceWeight*(objecttoVector(sigmaPoints(1))-meanVector)*(objecttoVector(sigmaPoints(1))-meanVector).';
+    covariance
     for j=2:length(sigmaPoints)
-        covariance = covariance+weights(3)*(objecttoVector(sigmaPoints(j))-meanVector) * (objecttoVector(sigmaPoints(j))-meanVector).';
+        covariance = covariance+weights(3)*(objecttoVector(sigmaPoints(j))-meanVector)*(objecttoVector(sigmaPoints(j))-meanVector).';
     end
     covariance = real(covariance);
 

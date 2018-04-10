@@ -1,6 +1,6 @@
 speed = 0.33;
-alpha = 0.3;
-beta =-0.91;
+alpha = 0.01;
+beta =2;
 k = 0;
 
 
@@ -41,21 +41,23 @@ lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatri
 
 
    sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
-   for j=1:length(sigmaPoints)
-       sigmaPoints(j) = process(sigmaPoints(j),10,dt);
+   transformedSigmaPoints = sigmaPoints;
+   for j=1:length(transformedSigmaPoints)
+       transformedSigmaPoints(j) = process(transformedSigmaPoints(j),10,dt);
    end
    weights = generateWeights(lambda,alpha,beta,size(initCovarianceMatrix,1))
-   y = weights(2);
-   for l=2:length(sigmaPoints)
+   y = weights(1);
+   for l=2:length(transformedSigmaPoints)
        y = y+weights(3);
    end
-   newState = unscentedTransformMean(weights,sigmaPoints);
+   y
+   newState = unscentedTransformMean(weights,transformedSigmaPoints);
    newState = vectortoObject(newState,x);
-   initCovarianceMatrix = unscentedTransform(weights,sigmaPoints);
-   initCovarianceMatrix = (initCovarianceMatrix + initCovarianceMatrix.')/2;
-   num2str(initCovarianceMatrix)
-   symmetric = issymmetric(initCovarianceMatrix)
-   drawState(newState,initCovarianceMatrix,sigmaPoints);
+   newCovarianceMatrix = unscentedTransform(weights,transformedSigmaPoints);
+   newCovarianceMatrix = (newCovarianceMatrix + newCovarianceMatrix.')/2;
+   num2str(newCovarianceMatrix)
+   symmetric = issymmetric(newCovarianceMatrix)
+   drawState(newState,newCovarianceMatrix,transformedSigmaPoints);
 
 
 

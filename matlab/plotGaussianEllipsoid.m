@@ -93,7 +93,6 @@ x = cos(tt); y=sin(tt);
 ap = [x(:) y(:)]';
 [v,d]=eig(C);
 d = sdwidth * sqrt(abs(d)); % convert variance to sdwidth*sd
-d = real(d);
 vReal = isreal(v);
 dReal = isreal(d);
 apReal = isreal(ap);
