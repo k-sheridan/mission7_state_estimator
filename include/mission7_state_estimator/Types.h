@@ -1,7 +1,12 @@
 #ifndef MISSION7_STATE_ESTIMATOR_MISSION7_STATE_ESTIMATOR_TYPES_H_
 #define MISSION7_STATE_ESTIMATOR_MISSION7_STATE_ESTIMATOR_TYPES_H_
 
-#include <Eigen/core>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <Eigen/Sparse>
+#include <Eigen/LU>
+#include <Eigen/SparseCholesky>
+#include <Eigen/Cholesky>
 
 //NOTE: the standard floating point precision we are using is double
 
@@ -57,7 +62,7 @@ public:
   void setCov(Eigen::Matrix<double, TARGET_STATE_SIZE, TARGET_STATE_SIZE> _cov){this->cov = _cov;}
   Eigen::Matrix<double, TARGET_STATE_SIZE, 1> getMean(){return this->mean;}
   void setMean(Eigen::Matrix<double, TARGET_STATE_SIZE, 1> _mean){this->mean = _mean;}
-}
+};
 
 struct ObstacleState{
 private:
@@ -78,7 +83,7 @@ public:
   void setCov(Eigen::Matrix<double, OBSTACLE_STATE_SIZE, OBSTACLE_STATE_SIZE> _cov){this->cov = _cov;}
   Eigen::Matrix<double, OBSTACLE_STATE_SIZE, 1> getMean(){return this->mean;}
   void setMean(Eigen::Matrix<double, OBSTACLE_STATE_SIZE, 1> _mean){this->mean = _mean;}
-}
+};
 
 struct QuadState{
 private:
@@ -101,7 +106,7 @@ public:
   void setMean(Eigen::Matrix<double, QUAD_STATE_SIZE, 1> _mean){this->mean = _mean;}
 
 
-}
+};
 
 struct Mission7State{
 private:
@@ -121,20 +126,20 @@ public:
     Eigen::Matrix<double, Eigen::Dynamic, 1> state;
 
     int dimensions = QUAD_STATE_SIZE + obstacle_states.size()*OBSTACLE_STATE_SIZE + target_states.size()*TARGET_STATE_SIZE;
-    this->state.resize(dimensions, 1); // allocate all of the dimensions
+    state.resize(dimensions, 1); // allocate all of the dimensions
 
     // set the quad part
-    this->state.block<QUAD_STATE_SIZE, 1>(0, 0) = quad_state.mean;
+    state.block<QUAD_STATE_SIZE, 1>(0, 0) = quad_state.getMean();
 
     // set each of the obstacles
     for(int i = 0; i < obstacle_states.size(); i++){
-      this->state.block<OBSTACLE_STATE_SIZE, 1>(QUAD_STATE_SIZE + i * OBSTACLE_STATE_SIZE, 0) = obstacle_states.at(i).mean;
+      state.block<OBSTACLE_STATE_SIZE, 1>(QUAD_STATE_SIZE + i * OBSTACLE_STATE_SIZE, 0) = obstacle_states.at(i).getMean();
     }
 
     //set each of the target states
     int start_row = QUAD_STATE_SIZE + obstacle_states.size() * OBSTACLE_STATE_SIZE;
     for(int i = 0; i < target_states.size(); i++){
-      this->state.block<TARGET_STATE_SIZE, 1>(start_row + i * TARGET_STATE_SIZE) = target_states.at(i).mean;
+      state.block<TARGET_STATE_SIZE, 1>(start_row + i * TARGET_STATE_SIZE, 0) = target_states.at(i).getMean();
     }
   }
 /*
@@ -146,17 +151,17 @@ public:
     int dimensions = QUAD_STATE_SIZE + obstacle_states.size()*OBSTACLE_STATE_SIZE + target_states.size()*TARGET_STATE_SIZE;
     ROS_ASSERT(vec.rows() == dimensions && vec.cols() == 1);
 
-    this->quad_state.mean = vec.block<QUAD_STATE_SIZE, 1>(0, 0);
+    this->quad_state.setMean(vec.block<QUAD_STATE_SIZE, 1>(0, 0));
 
     // set the obstacle states
     for(int i = 0; i < obstacle_states.size(); i++){
-      this->obstacle_states.at(i).mean = vec.block<OBSTACLE_STATE_SIZE, 1>(QUAD_STATE_SIZE + i*OBSTACLE_STATE_SIZE, 0);
+      this->obstacle_states.at(i).setMean(vec.block<OBSTACLE_STATE_SIZE, 1>(QUAD_STATE_SIZE + i*OBSTACLE_STATE_SIZE, 0));
     }
 
     //set the target robot states
     int start_row = QUAD_STATE_SIZE + obstacle_states.size() * OBSTACLE_STATE_SIZE;
     for(int i = 0; i < target_states.size(); i++){
-      this->target_states.at(i).mean = vec.block<TARGET_STATE_SIZE, 1>(start_row + i*TARGET_STATE_SIZE, 0);
+      this->target_states.at(i).setMean(vec.block<TARGET_STATE_SIZE, 1>(start_row + i*TARGET_STATE_SIZE, 0));
     }
 
   }
