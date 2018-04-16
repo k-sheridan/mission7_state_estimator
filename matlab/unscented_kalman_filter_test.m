@@ -1,8 +1,8 @@
 %initialize constants
 speed = 0.33;
-alpha = 0.02;
+alpha = 0.01;
 beta =2;
-k = 1;
+k = 3;
 dt = 0.1;
 d_total=5;
 
@@ -22,8 +22,8 @@ x.obstacle_robots = obstacles;
 newState = x;
 
 %initailize covariance matrix
-thetaUncertainty = (pi/20)^2;
-timerUncetainty = 100;
+thetaUncertainty = (pi/6)^2;
+timerUncetainty = 3^2;
 xUncertainty = 0.25;
 yUncertainty = 0.25;
 diagArray=[];
