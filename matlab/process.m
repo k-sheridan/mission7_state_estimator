@@ -1,4 +1,4 @@
-function [next_state] = process(state, deltaT, time_step, start_time)
+function [next_state] = process(state, deltaT,time_step)
 
 roomba_angular_velocity = -pi/2;
 speed = 0.33;
@@ -16,7 +16,7 @@ for t=time_step:time_step:deltaT
                 distance = norm(robots(i).state(1:2, 1) - robots(j).state(1:2, 1));
                 if distance <= 2*radius
                     
-                    % robot i is left of robot j
+
                     if detectCollision(robots(i),robots(j),pi/2) == true && robots(i).collidedThisTimeStep == false 
                         robots(i).collidedThisTimeStep = true;
                         if strcmp(class(robots(i)),'TargetRobot') == true
@@ -81,8 +81,9 @@ for t=time_step:time_step:deltaT
         state.obstacle_robots(obstacle)= obstacleMove(state.obstacle_robots(obstacle),obstacle_angular_velocity,speed,time_step);
     end
     
-    
+
 end
+
 
 next_state = state;
 

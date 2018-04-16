@@ -36,27 +36,25 @@ end
 initCovarianceMatrix = diag(diagArray);
 sizeCovariance = size(initCovarianceMatrix)
 sizeX=size(objecttoVector(x))
-newCovarianceMatrix = initCovarianceMatrix;
 
 %set lambda
 lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1)
 
-%initialize sigma points
-sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
-transformedSigmaPoints = sigmaPoints;
-
 for l=dt:dt:d_total
     %calculate sigma points
-   transformedSigmaPoints = calcSigmaPoints(newCovarianceMatrix,lambda,x);
+   newCovarianceMatrix = initCovarianceMatrix;
+   sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
    
     %run process
+   transformedSigmaPoints = sigmaPoints;
    for j=1:length(transformedSigmaPoints)
+
             transformedSigmaPoints(j) = process(transformedSigmaPoints(j),dt,dt);
    end
    
     %generate weights
-   weights = generateWeights(lambda,alpha,beta,size(newCovarianceMatrix,1))
-  
+   weights = generateWeights(lambda,alpha,beta,size(initCovarianceMatrix,1))
+   y = weights(1);
 
 
 
