@@ -1,8 +1,8 @@
 %initialize constants
 speed = 0.33;
-alpha = 0.1;
+alpha = 0.02;
 beta =2;
-k = 0;
+k = 1;
 dt = 0.1;
 d_total=5;
 
@@ -23,7 +23,7 @@ newState = x;
 
 %initailize covariance matrix
 thetaUncertainty = (pi/20)^2;
-timerUncetainty = 0.1;
+timerUncetainty = 100;
 xUncertainty = 0.25;
 yUncertainty = 0.25;
 diagArray=[];
@@ -67,7 +67,7 @@ for l=dt:dt:d_total
     %calculate new covariance
     newCovarianceMatrix = unscentedTransform(weights,transformedSigmaPoints);
     %newCovarianceMatrix = (newCovarianceMatrix + newCovarianceMatrix.')/2;
-    %num2str(newCovarianceMatrix)
+    num2str(newCovarianceMatrix)
     %symmetric = issymmetric(newCovarianceMatrix)
 
 
