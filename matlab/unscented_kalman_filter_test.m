@@ -4,7 +4,7 @@ alpha = 0.01;
 beta =2;
 k = 3;
 dt = 0.1;
-d_total=1;
+d_total=40;
 video = VideoWriter('movie.avi');
 open(video);
 
