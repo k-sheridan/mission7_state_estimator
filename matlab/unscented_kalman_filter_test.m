@@ -4,7 +4,9 @@ alpha = 0.01;
 beta =2;
 k = 3;
 dt = 0.1;
-d_total=5;
+d_total=1;
+video = VideoWriter('movie.avi');
+open(video);
 
 %build state
 for n = 0:9
@@ -74,7 +76,12 @@ for l=dt:dt:d_total
 
     %draw
     drawState(newState,newCovarianceMatrix,transformedSigmaPoints);
+    frame = getframe(gcf);
+    writeVideo(video,frame);
+    
 end
+
+close(video);
 
 
 
