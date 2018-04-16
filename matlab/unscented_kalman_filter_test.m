@@ -19,10 +19,11 @@ x = State;
 
 x.target_robots = targets;
 x.obstacle_robots = obstacles;
+newState = x;
 
 %initailize covariance matrix
 thetaUncertainty = (pi/20)^2;
-timerUncetainty = 1;
+timerUncetainty = 0.1;
 xUncertainty = 0.25;
 yUncertainty = 0.25;
 diagArray=[];
@@ -34,41 +35,39 @@ for j = 1:14
     end
 end
 initCovarianceMatrix = diag(diagArray);
-sizeCovariance = size(initCovarianceMatrix)
-sizeX=size(objecttoVector(x))
+sizeCovariance = size(initCovarianceMatrix);
+sizeX=size(objecttoVector(x));
 newCovarianceMatrix = initCovarianceMatrix;
 
 %set lambda
-lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1)
+lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1);
 
 %initialize sigma points
 sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
 transformedSigmaPoints = sigmaPoints;
 
+%generate weights
+weights = generateWeights(lambda,alpha,beta,size(newCovarianceMatrix,1));
+
 for l=dt:dt:d_total
     %calculate sigma points
-   transformedSigmaPoints = calcSigmaPoints(newCovarianceMatrix,lambda,x);
+   transformedSigmaPoints = calcSigmaPoints(newCovarianceMatrix,lambda,newState);
    
+
     %run process
-   for j=1:length(transformedSigmaPoints)
-            transformedSigmaPoints(j) = process(transformedSigmaPoints(j),dt,dt);
-   end
-   
-    %generate weights
-   weights = generateWeights(lambda,alpha,beta,size(newCovarianceMatrix,1))
-  
-
-
-
-    %get new mean
-    newState = unscentedTransformMean(weights,transformedSigmaPoints);
-    newState = vectortoObject(newState,x);
+    for j=1:length(transformedSigmaPoints)
+       transformedSigmaPoints(j) = process(transformedSigmaPoints(j),dt,dt);
+    end
+    
+    %process state
+    newState = process(newState,dt,dt);
+    
     
 
     %calculate new covariance
     newCovarianceMatrix = unscentedTransform(weights,transformedSigmaPoints);
     %newCovarianceMatrix = (newCovarianceMatrix + newCovarianceMatrix.')/2;
-    num2str(newCovarianceMatrix)
+    %num2str(newCovarianceMatrix)
     %symmetric = issymmetric(newCovarianceMatrix)
 
 

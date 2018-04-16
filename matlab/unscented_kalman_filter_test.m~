@@ -4,7 +4,7 @@ alpha = 0.1;
 beta =2;
 k = 0;
 dt = 0.1;
-d_total=5;
+d_total=0.3;
 
 %build state
 for n = 0:9
@@ -19,10 +19,11 @@ x = State;
 
 x.target_robots = targets;
 x.obstacle_robots = obstacles;
+newState = x;
 
 %initailize covariance matrix
 thetaUncertainty = (pi/20)^2;
-timerUncetainty = 1;
+timerUncetainty = 0.1;
 xUncertainty = 0.25;
 yUncertainty = 0.25;
 diagArray=[];
@@ -34,39 +35,41 @@ for j = 1:14
     end
 end
 initCovarianceMatrix = diag(diagArray);
-sizeCovariance = size(initCovarianceMatrix)
-sizeX=size(objecttoVector(x))
+sizeCovariance = size(initCovarianceMatrix);
+sizeX=size(objecttoVector(x));
+newCovarianceMatrix = initCovarianceMatrix;
 
 %set lambda
-lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1)
+lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1);
+
+%initialize sigma points
+sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
+transformedSigmaPoints = sigmaPoints;
+
+%generate weights
+weights = generateWeights(lambda,alpha,beta,size(newCovarianceMatrix,1));
 
 for l=dt:dt:d_total
     %calculate sigma points
-   newCovarianceMatrix = initCovarianceMatrix;
-   sigmaPoints = calcSigmaPoints(initCovarianceMatrix,lambda,x);
+   transformedSigmaPoints = calcSigmaPoints(newCovarianceMatrix,lambda,newState);
+   
    
     %run process
-   transformedSigmaPoints = sigmaPoints;
    for j=1:length(transformedSigmaPoints)
-
-            transformedSigmaPoints(j) = process(transformedSigmaPoints(j),dt,dt);
+       transformedSigmaPoints(j) = process(transformedSigmaPoints(j),dt,dt);
    end
-   
-    %generate weights
-   weights = generateWeights(lambda,alpha,beta,size(initCovarianceMatrix,1))
-   y = weights(1);
-
-
-
+    
     %get new mean
+    prevState = newState;
     newState = unscentedTransformMean(weights,transformedSigmaPoints);
-    newState = vectortoObject(newState,x);
+    newState = vectortoObject(newState,prevState);
+    
     
 
     %calculate new covariance
     newCovarianceMatrix = unscentedTransform(weights,transformedSigmaPoints);
     %newCovarianceMatrix = (newCovarianceMatrix + newCovarianceMatrix.')/2;
-    num2str(newCovarianceMatrix)
+    %num2str(newCovarianceMatrix)
     %symmetric = issymmetric(newCovarianceMatrix)
 
 
