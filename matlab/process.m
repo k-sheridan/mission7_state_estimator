@@ -60,6 +60,9 @@ for t=time_step:time_step:deltaT
     
     
     for target=1:length(state.target_robots)
+        if state.target_robots(target).state(4) < 0
+            continue;
+        end
         if state.target_robots(target).state(1) >= 10 || state.target_robots(target).state(2) >=10 || state.target_robots(target).state(2) <= -10 || state.target_robots(target).state(1) <= -10 
             continue;
         end

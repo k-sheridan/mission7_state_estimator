@@ -4,7 +4,7 @@ function [] = drawState(state, covarianceMatrix,sigmaPoints)
     
     drawMean(state);
     drawCovariances(state,covarianceMatrix);
-    drawSigmaPoints(sigmaPoints);
+    %drawSigmaPoints(sigmaPoints);
     
     xlim([-10, 10]);
     ylim([-10, 10]);

@@ -40,7 +40,7 @@ for k=1:12
   if rem(k,3) == 0
      continue;
   else
-     H = [H;[zeros(1,k+39),1,zeros(1,12-k)]];
+     H = [H;[zeros(1,k+40),1,zeros(1,52-k)]];
   end   
 end
 
@@ -58,7 +58,7 @@ for j = 1:14
     end
 end
 initCovarianceMatrix = diag(diagArray);
-sizeCovariance = size(initCovarianceMatrix);k
+sizeCovariance = size(initCovarianceMatrix);
 sizeX=size(objecttoVector(x));
 newCovarianceMatrix = initCovarianceMatrix;
 
