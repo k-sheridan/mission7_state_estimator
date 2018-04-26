@@ -1,3 +1,37 @@
+%check H
+b = 21;
+m = H * objecttoVector(x);
+for target=x.obstacle_robots
+    if m(b)==target.state(1)
+        b=b+1;
+    else
+        b
+        break
+    end
+    if m(b)==target.state(2)
+        b=b+1;
+    else
+        b
+        break
+    end
+end
+for target=x.target_robots
+    if m(b)==target.state(1)
+        b=b+1;
+    else
+        b
+        break
+    end
+    if m(b)==target.state(2)
+        b=b+1;
+    else
+        b
+        break
+    end
+end
+
+
+
 %check weights
    y = weights(1);
    for l=2:length(transformedSigmaPoints)

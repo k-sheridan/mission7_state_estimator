@@ -4,9 +4,14 @@ alpha = 0.01;
 beta =2;
 k = 3;
 dt = 0.1;
-d_total=20;
+d_total=40;
 video = VideoWriter('movie.avi');
 open(video);
+s=rng;
+data = [];
+
+
+differenceMatrix = [];
 
 %build state
 for n = 0:9
@@ -22,12 +27,16 @@ x = State;
 x.target_robots = targets;
 x.obstacle_robots = obstacles;
 newState = x;
+reality = x;
 
 %initialize H
 H = [1,zeros(1,51);
      0,1,zeros(1,50);
      ];
 
+measurement_uncertainty = 0.25
+
+ 
 for k=4:2:40
    if rem(k,4) == 0
          continue;
@@ -44,6 +53,9 @@ for k=1:12
   end   
 end
 
+%initialize process error Q
+Q=diag(repelem(0.00001,52));
+
 %initailize covariance matrix
 thetaUncertainty = (pi/6)^2;
 timerUncetainty = 9;
@@ -58,9 +70,9 @@ for j = 1:14
     end
 end
 initCovarianceMatrix = diag(diagArray);
-sizeCovariance = size(initCovarianceMatrix);k
+sizeCovariance = size(initCovarianceMatrix);
 sizeX=size(objecttoVector(x));
-newCovarianceMatrix = initCovarianceMatrix;
+newCovarianceMatrix = initCovarianceMatrix + Q;
 
 %set lambda
 lambda = alpha^2 * (size(initCovarianceMatrix,1) + k) - size(initCovarianceMatrix,1);
@@ -74,7 +86,7 @@ weights = generateWeights(lambda,alpha,beta,size(newCovarianceMatrix,1));
 
 for l=dt:dt:d_total
     %calculate sigma points
-   %transformedSigmaPoints = calcSigmaPoints(newCovarianceMatrix,lambda,newState);
+   transformedSigmaPoints = calcSigmaPoints(newCovarianceMatrix,lambda,newState);
    
 
     %run process
@@ -84,16 +96,20 @@ for l=dt:dt:d_total
     
     %process state
     newState = process(newState,dt,dt);
-    
+    reality = process(reality,dt,dt);
     
 
     %calculate new covariance
-    newCovarianceMatrix = unscentedTransform(weights,transformedSigmaPoints);
+    newCovarianceMatrix = unscentedTransform(weights,transformedSigmaPoints) + Q;
     %newCovarianceMatrix = (newCovarianceMatrix + newCovarianceMatrix.')/2;
-    num2str(newCovarianceMatrix)
+    %num2str(newCovarianceMatrix)
     %symmetric = issymmetric(newCovarianceMatrix)
+    
+    %kalman update
+    measurement = makeMeasurement(reality,0.1);
+    [newState,newCovarianceMatrix] = kalmanUpdate(newState,newCovarianceMatrix,H,measurement,measurement_uncertainty);
 
-
+    data = [data, objecttoVector(reality)-objecttoVector(newState)];
 
     %draw
     drawState(newState,newCovarianceMatrix,transformedSigmaPoints);
@@ -103,6 +119,9 @@ for l=dt:dt:d_total
 end
 
 close(video);
-
-
+plotxy_target(data,d_total,dt,newState);
+plotxy_obstacle(data,d_total,dt,newState);
+plotTheta_obstacle(data,d_total,dt,newState);
+plotTheta_targets(data,d_total,dt,newState);
+plotTimer(data,d_total,dt,newState);
 
