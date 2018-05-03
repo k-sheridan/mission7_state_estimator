@@ -1,4 +1,4 @@
-function [covariance] = unscentedTransform(weights,sigmaPoints)
+function [covariance] = unscentedTransform(weights,sigmaPoints,state)
     initCovarianceWeight = weights(2);
     meanVector = unscentedTransformMean(weights,sigmaPoints);
     covariance = initCovarianceWeight*(objecttoVector(sigmaPoints(1))-meanVector)*(objecttoVector(sigmaPoints(1))-meanVector).';

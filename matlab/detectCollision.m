@@ -1,4 +1,5 @@
 function [bool] = detectCollision(roomba1,roomba2,bound)
+    %detect if roomba 1 is colliding
     if strcmp(class(roomba1),'TargetRobot') == true
         if(roomba1.rotating ~= 0)
             bool = false;

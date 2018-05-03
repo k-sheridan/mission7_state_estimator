@@ -1,9 +1,13 @@
 %initialize constants
 speed = 0.33;
+%tuning parameters
 alpha = 0.01;
 beta =2;
 k = 3;
+
+%timestep
 dt = 0.1;
+%total time to run program
 d_total=40;
 video = VideoWriter('movie.avi');
 open(video);

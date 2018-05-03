@@ -2,7 +2,7 @@ classdef ObstacleRobot < Roomba
     
     properties
         state; %[x, y, theta]
-        paused; % Delta T value reflecting how long the obstacle is paused. If its 0 then its not paused 
+        paused; % (double) Delta T value reflecting how long the obstacle is paused. If its 0 then its not paused 
         collidedThisTimeStep = false;
         roombaID;
     end
