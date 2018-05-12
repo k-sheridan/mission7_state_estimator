@@ -15,10 +15,11 @@ x.obstacle_robots = obstacles;
  
 dt = 0.1;
 
-for t = (0:dt:120)
+for t = (0:dt:60)
    x = process(x,dt,0.1);
-   drawState(x); 
    t
 end
+
+drawState(x); 
 
 
