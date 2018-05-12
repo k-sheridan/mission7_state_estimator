@@ -29,7 +29,7 @@
 
 
 int main(int argc, char **argv) {
-	ros::init(argc, argv, "dipa_test");
+	ros::init(argc, argv, "state_estimator");
 
   
 

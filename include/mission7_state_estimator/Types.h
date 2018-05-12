@@ -1,6 +1,7 @@
 #ifndef MISSION7_STATE_ESTIMATOR_MISSION7_STATE_ESTIMATOR_TYPES_H_
 #define MISSION7_STATE_ESTIMATOR_MISSION7_STATE_ESTIMATOR_TYPES_H_
 
+#include <ros/ros.h>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <Eigen/Sparse>
@@ -180,8 +181,8 @@ public:
     this->Sigma.conservativeResize(new_dim, new_dim); // does not set any of the newly allocated coeffs
 
     // set the correlation blocks to zero
-    this->Sigma.block<old_dim, TARGET_STATE_SIZE>(0, old_dim).setZero();
-    this->Sigma.block<TARGET_STATE_SIZE, old_dim>(old_dim, 0).setZero();
+    this->Sigma.block<this->Sigma.rows(), TARGET_STATE_SIZE>(0, old_dim).setZero();
+    this->Sigma.block<TARGET_STATE_SIZE, this->Sigma.cols()>(old_dim, 0).setZero();
 
     // set the targets uncertainty
     this->Sigma.block<TARGET_STATE_SIZE, TARGET_STATE_SIZE>(old_dim, old_dim) = x.cov;
