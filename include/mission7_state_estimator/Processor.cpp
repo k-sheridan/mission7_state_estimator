@@ -7,11 +7,19 @@
 
 #include "Mission7StateEstimator.h"
 
-Mission7State Mission7StateEstimator::process(Mission7State prior, double dt){
+QuadState Mission7StateEstimator::processQuad(QuadState prior, double dt){
 
 }
 
-Mission7State Mission7StateEstimator::processAndPropagateUncertainty(Mission7State prior, double dt){
+QuadState Mission7StateEstimator::processQuadAndPropagateUncertainty(QuadState prior, double dt){
+
+}
+
+GroundRobotState Mission7StateEstimator::processGroundRobots(GroundRobotState prior, double dt){
+
+}
+
+GroundRobotState Mission7StateEstimator::processGroundRobotsAndPropagateUncertainty(GroundRobotState prior, double dt){
 
 }
 

@@ -86,7 +86,7 @@ public:
 
 };
 
-struct Mission7State{
+struct GroundRobotState{
 private:
 	std::vector<ObstacleState> obstacle_states;
 	std::vector<TargetState> target_states;
