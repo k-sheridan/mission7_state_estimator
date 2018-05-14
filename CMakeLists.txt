@@ -56,7 +56,7 @@ catkin_package(
 
 
 add_library(mission7_state_estimator_types include/mission7_state_estimator/Types.h)
-set_target_properties(mission7_state_estimator_types PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(mission7_state_estimator_types PROPERTIES LINKER_LANGUAGE CXX ${Eigen_LIBRARIES} ${sophus_LIBRARIES})
 
 add_library(mission7_state_estimator include/mission7_state_estimator/Mission7StateEstimator.cpp include/mission7_state_estimator/Processor.cpp)
 target_link_libraries(mission7_state_estimator ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${Eigen_LIBRARIES} ${sophus_LIBRARIES} mission7_state_estimator_types)

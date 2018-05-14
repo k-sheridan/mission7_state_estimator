@@ -16,3 +16,16 @@ Mission7StateEstimator::~Mission7StateEstimator() {
 	// TODO Auto-generated destructor stub
 }
 
+
+void Mission7StateEstimator::main_loop(){
+
+	ros::Rate loop_rate(RATE);
+
+	while(ros::ok()){
+		ros::spinOnce();
+
+		//TODO update using measurements
+
+		loop_rate.sleep();
+	}
+}

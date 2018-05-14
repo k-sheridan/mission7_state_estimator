@@ -9,10 +9,21 @@
 #include <Eigen/SparseCholesky>
 #include <Eigen/Cholesky>
 
+#include <sophus/se3.hpp>
+
 //NOTE: the standard floating point precision we are using is double
 
-// x, y, z, thx, thy, thz, b_dx, b_dy, b_dz, b_wx, b_wy, b_wz, b_ax, b_ay, b_az, biases_gyro, biases_accel
-#define QUAD_STATE_SIZE 15
+// x, y, z, thx, thy, thz, b_dx, b_dy, b_dz, b_wx, b_wy, b_wz, b_ax, b_ay, b_az, biases_accel, biases_gyro
+#define QUAD_STATE_SIZE 21
+
+#define POSX_INDEX 0
+#define THETAX_INDEX 3
+#define VELX_INDEX 6
+#define OMEGAX_INDEX 9
+#define ACCELX_INDEX 12
+#define ACCELBIASX_INDEX 15
+#define GYROBIASX_INDEX 18
+
 // x, y, theta
 #define OBSTACLE_STATE_SIZE 3
 // x, y, theta, timer
@@ -67,6 +78,7 @@ struct QuadState{
 private:
 	Eigen::Matrix<double, QUAD_STATE_SIZE, 1> mean;
 	Eigen::Matrix<double, QUAD_STATE_SIZE, QUAD_STATE_SIZE> cov;
+	Sophus::SE3d pose;
 public:
 	QuadState(){
 		mean.setZero();
@@ -78,10 +90,40 @@ public:
 		this->cov = _cov;
 	}
 
+
+	// this is the tangent space pose which coincides with the Sigma
+	// this is regularly transformed into the tangent space of the current pose
+	Eigen::Matrix<double, 3, 1> getLinearTwist(){return Eigen::Matrix<double, 3, 1>(mean(POSX_INDEX), mean(POSX_INDEX+1), mean(POSX_INDEX+2));}
+	Eigen::Matrix<double, 3, 1> getAngularTwist(){return Eigen::Matrix<double, 3, 1>(mean(THETAX_INDEX), mean(THETAX_INDEX+1), mean(THETAX_INDEX+2));}
+
+	Eigen::Matrix<double, 6, 1> getTwist(){Eigen::Matrix<double, 6, 1> temp; temp << getLinearTwist(), getAngularTwist(); return temp;}
+
+	Eigen::Matrix<double, 3, 1> getVelocity(){return Eigen::Matrix<double, 3, 1>(mean(VELX_INDEX), mean(VELX_INDEX+1), mean(VELX_INDEX+2));}
+	Eigen::Matrix<double, 3, 1> getOmega(){return Eigen::Matrix<double, 3, 1>(mean(OMEGAX_INDEX), mean(OMEGAX_INDEX+1), mean(OMEGAX_INDEX+2));}
+	Eigen::Matrix<double, 3, 1> getAcceleration(){return Eigen::Matrix<double, 3, 1>(mean(ACCELX_INDEX), mean(ACCELX_INDEX+1), mean(ACCELX_INDEX+2));}
+	//Eigen::Matrix<double, 3, 1> getPhi(){return Eigen::Matrix<double, 3, 1>(mean(PHIX_INDEX), mean(PHIX_INDEX+1), mean(PHIX_INDEX+2));}
+	Eigen::Matrix<double, 3, 1> getAccelBiases(){return Eigen::Matrix<double, 3, 1>(mean(ACCELBIASX_INDEX), mean(ACCELBIASX_INDEX+1), mean(ACCELBIASX_INDEX+2));}
+	Eigen::Matrix<double, 3, 1> getGyroBiases(){return Eigen::Matrix<double, 3, 1>(mean(GYROBIASX_INDEX), mean(GYROBIASX_INDEX+1), mean(GYROBIASX_INDEX+2));}
+	//double getLambda(){return mean(LAMBDA_INDEX);}
+
+	void setLinearTwist(Eigen::Matrix<double, 3, 1> in){const int i = POSX_INDEX; mean(i)=in.x(); mean(i+1)=in.y(); mean(i+2)=in.z();}
+	void setAngularTwist(Eigen::Matrix<double, 3, 1> in){const int i = THETAX_INDEX; mean(i)=in.x(); mean(i+1)=in.y(); mean(i+2)=in.z();}
+	void setVelocity(Eigen::Matrix<double, 3, 1> in){const int i = VELX_INDEX; mean(i)=in.x(); mean(i+1)=in.y(); mean(i+2)=in.z();}
+	void setOmega(Eigen::Matrix<double, 3, 1> in){const int i = OMEGAX_INDEX; mean(i)=in.x(); mean(i+1)=in.y(); mean(i+2)=in.z();}
+	void setAcceleration(Eigen::Matrix<double, 3, 1> in){const int i = ACCELX_INDEX; mean(i)=in.x(); mean(i+1)=in.y(); mean(i+2)=in.z();}
+	//void setPhi(Eigen::Matrix<double, 3, 1> in){const int i = PHIX_INDEX; mean(i)=in.x(); mean(i+1)=in.y(); mean(i+2)=in.z();}
+	void setAccelBiases(Eigen::Matrix<double, 3, 1> in){const int i = ACCELBIASX_INDEX; mean(i)=in.x(); mean(i+1)=in.y(); mean(i+2)=in.z();}
+	void setGyroBiases(Eigen::Matrix<double, 3, 1> in){const int i = GYROBIASX_INDEX; mean(i)=in.x(); mean(i+1)=in.y(); mean(i+2)=in.z();}
+	//void setLambda(double in){mean(LAMBDA_INDEX) = in;}
+
+
 	Eigen::Matrix<double, QUAD_STATE_SIZE, QUAD_STATE_SIZE> getCov(){return this->cov;}
 	void setCov(Eigen::Matrix<double, QUAD_STATE_SIZE, QUAD_STATE_SIZE> _cov){this->cov = _cov;}
 	Eigen::Matrix<double, QUAD_STATE_SIZE, 1> getMean(){return this->mean;}
 	void setMean(Eigen::Matrix<double, QUAD_STATE_SIZE, 1> _mean){this->mean = _mean;}
+
+	Sophus::SE3d getPose();
+	void setPose(Sophus::SE3d p){this->pose = p;}
 
 
 };

@@ -16,6 +16,7 @@
 
 #include <tf/transform_listener.h>
 
+#include "Params.h"
 #include "Types.h"
 
 class Mission7StateEstimator {
@@ -42,6 +43,8 @@ public:
 	QuadState processQuad(QuadState prior, double dt);
 
 	QuadState processQuadAndPropagateUncertainty(QuadState prior, double dt);
+
+	void main_loop();
 };
 
 #endif /* MISSION7_STATE_ESTIMATOR_INCLUDE_MISSION7_STATE_ESTIMATOR_MISSION7STATEESTIMATOR_H_ */
