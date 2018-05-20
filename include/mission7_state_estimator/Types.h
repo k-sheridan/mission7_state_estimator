@@ -79,6 +79,7 @@ private:
 	Eigen::Matrix<double, QUAD_STATE_SIZE, 1> mean;
 	Eigen::Matrix<double, QUAD_STATE_SIZE, QUAD_STATE_SIZE> cov;
 	Sophus::SE3d pose;
+	ros::Time t;
 public:
 	QuadState(){
 		mean.setZero();
@@ -90,6 +91,8 @@ public:
 		this->cov = _cov;
 	}
 
+	ros::Time getTime(){return t;}
+	void setTime(ros::Time t){this->t = t;}
 
 	// this is the tangent space pose which coincides with the Sigma
 	// this is regularly transformed into the tangent space of the current pose
@@ -258,6 +261,19 @@ public:
 	GenericMeasurement(nav_msgs::Odometry odom_it){
 		this->odom_msg = odom_it;
 		this->type = ODOM;
+	}
+
+	ros::Time getTime(){
+		switch(this->type){
+		case IMU:
+			return this->imu_msg.header.stamp;
+			break;
+		case ODOM:
+			return this->odom_msg.header.stamp;
+			break;
+		case RANGE:
+			return this->range_msg.header.stamp;
+		}
 	}
 };
 

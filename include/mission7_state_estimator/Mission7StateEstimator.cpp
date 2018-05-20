@@ -9,6 +9,10 @@
 
 Mission7StateEstimator::Mission7StateEstimator() {
 
+	ros::NodeHandle nh;
+
+	//setup publishers
+	this->quad_odom_publisher = nh.advertise<nav_msgs::Odometry>("state_estimator/odom", 10);
 
 }
 
@@ -28,4 +32,8 @@ void Mission7StateEstimator::main_loop(){
 
 		loop_rate.sleep();
 	}
+}
+
+void Mission7StateEstimator::publishQuadOdometry(){
+		sensor_msgs::Odometry odom;
 }

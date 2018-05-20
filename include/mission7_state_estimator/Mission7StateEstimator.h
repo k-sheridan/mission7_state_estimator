@@ -26,11 +26,9 @@ public:
 	GroundRobotState ground_robot_state;
 	QuadState quad_state;
 
-	tf::TransformListener tf_listener;
+	ros::Publisher quad_odom_publisher;
 
-	std::list<sensor_msgs::Imu> imu_buffer;
-	std::list<nav_msgs::Odometry> odom_buffer;
-	std::list<sensor_msgs::Range> range_buffer;
+	tf::TransformListener tf_listener;
 
 	std::deque<GenericMeasurement> measurements; // deque of all measurements
 
@@ -41,6 +39,14 @@ public:
 	void odomCallback(const nav_msgs::OdometryConstPtr& msg);
 	void imuCallback(const sensor_msgs::ImuConstPtr& msg);
 	void rangeCallback(const sensor_msgs::RangeConstPtr& msg);
+
+	void updateState();
+
+	void IMUUpdate(sensor_msgs::Imu);
+	void odomUpdate(nav_msgs::Odometry);
+	void rangeUpdate(sensor_msgs::Range);
+
+	void publishQuadOdometry();
 
 	GroundRobotState processGroundRobots(GroundRobotState prior, double dt);
 
