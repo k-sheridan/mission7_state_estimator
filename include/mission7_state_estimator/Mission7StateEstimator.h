@@ -12,6 +12,7 @@
 #include <sensor_msgs/Imu.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/Range.h>
+#include <list>
 #include <deque>
 
 #include <tf/transform_listener.h>
@@ -27,14 +28,19 @@ public:
 
 	tf::TransformListener tf_listener;
 
-	std::deque<sensor_msgs::Imu> imu_buffer;
-	std::deque<nav_msgs::Odometry> odom_buffer;
-	std::deque<sensor_msgs::Range> range_buffer;
+	std::list<sensor_msgs::Imu> imu_buffer;
+	std::list<nav_msgs::Odometry> odom_buffer;
+	std::list<sensor_msgs::Range> range_buffer;
+
+	std::deque<GenericMeasurement> measurements; // deque of all measurements
 
 
 	Mission7StateEstimator();
 	virtual ~Mission7StateEstimator();
 
+	void odomCallback(const nav_msgs::OdometryConstPtr& msg);
+	void imuCallback(const sensor_msgs::ImuConstPtr& msg);
+	void rangeCallback(const sensor_msgs::RangeConstPtr& msg);
 
 	GroundRobotState processGroundRobots(GroundRobotState prior, double dt);
 

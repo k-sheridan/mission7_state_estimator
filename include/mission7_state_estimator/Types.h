@@ -122,7 +122,7 @@ public:
 	Eigen::Matrix<double, QUAD_STATE_SIZE, 1> getMean(){return this->mean;}
 	void setMean(Eigen::Matrix<double, QUAD_STATE_SIZE, 1> _mean){this->mean = _mean;}
 
-	Sophus::SE3d getPose();
+	Sophus::SE3d getPose(){return this->pose;};
 	void setPose(Sophus::SE3d p){this->pose = p;}
 
 
@@ -225,6 +225,40 @@ public:
 		this->Sigma.block(old_dim, old_dim, TARGET_STATE_SIZE, TARGET_STATE_SIZE) = x.getCov();
 	}
 
+};
+
+
+//Generic Measurement
+struct GenericMeasurement{
+private:
+	sensor_msgs::Imu imu_msg;
+	sensor_msgs::Range range_msg;
+	nav_msgs::Odometry odom_msg;
+
+public:
+	enum MeasurementType{
+		IMU,
+		ODOM,
+		RANGE
+	};
+
+
+	MeasurementType type;
+
+	GenericMeasurement(sensor_msgs::Imu imu_it){
+		this->imu_msg = imu_it;
+		this->type = IMU;
+	}
+
+	GenericMeasurement(sensor_msgs::Range range_it){
+		this->range_msg = range_it;
+		this->type = RANGE;
+	}
+
+	GenericMeasurement(nav_msgs::Odometry odom_it){
+		this->odom_msg = odom_it;
+		this->type = ODOM;
+	}
 };
 
 #endif

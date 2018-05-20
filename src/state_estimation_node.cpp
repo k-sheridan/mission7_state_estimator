@@ -26,12 +26,15 @@
 #include <sstream>
 #include <cv_bridge/cv_bridge.h>
 
+#include "../include/mission7_state_estimator/Mission7StateEstimator.h"
 
 
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "state_estimator");
 
-  
+	Mission7StateEstimator state_est;
+
+	state_est.main_loop();
 
 	return 0;
 }
