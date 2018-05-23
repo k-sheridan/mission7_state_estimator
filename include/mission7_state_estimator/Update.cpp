@@ -59,10 +59,52 @@ void Mission7StateEstimator::update(GenericMeasurement z){
 }
 
 void Mission7StateEstimator::IMUUpdate(sensor_msgs::Imu){
-//TODO
+	// compute numerical jacobian
+	Eigen::Matrix<double, 6, QUAD_STATE_SIZE> H;
+	
+	for(int i = 0; i < QUAD_STATE_SIZE; i++){
+		Eigen::Matrix<double, QUAD_STATE_SIZE, 1> mean = this->quad_state.getMean();
+		mean(i) += JACOBIAN_DELTA;
+		
+		QuadState test;
+		test.setMean(mean);
+
+		Eigen::Matrix<double, 6, 1> high = this->IMUMeasurement(test);
+
+		mean(i) -= 2*JACOBIAN_DELTA;
+
+		test.setMean(mean);
+
+		Eigen::Matrix<double, 6, 1> low = this->IMUMeasurement(test);
+
+		H.block(6, 1, 0, i) = (1 / (2*JACOBIAN_DELTA))*(high - low);
+	}
+
+	// kalman update
 }
 void Mission7StateEstimator::odomUpdate(nav_msgs::Odometry){
-//TODO
+	// compute numerical jacobian
+	Eigen::Matrix<double, 6, QUAD_STATE_SIZE> H;
+	
+	for(int i = 0; i < QUAD_STATE_SIZE; i++){
+		Eigen::Matrix<double, QUAD_STATE_SIZE, 1> mean = this->quad_state.getMean();
+		mean(i) += JACOBIAN_DELTA;
+		
+		QuadState test;
+		test.setMean(mean);
+
+		Eigen::Matrix<double, 6, 1> high = this->odomMeasurement(test);
+
+		mean(i) -= 2*JACOBIAN_DELTA;
+
+		test.setMean(mean);
+
+		Eigen::Matrix<double, 6, 1> low = this->odomMeasurement(test);
+
+		H.block(6, 1, 0, i) = (1 / (2*JACOBIAN_DELTA))*(high - low);
+	}
+
+	// kalman update
 }
 void Mission7StateEstimator::rangeUpdate(sensor_msgs::Range){
 	tf::StampedTransform transform;

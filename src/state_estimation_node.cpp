@@ -34,7 +34,5 @@ int main(int argc, char **argv) {
 
 	Mission7StateEstimator state_est;
 
-	state_est.main_loop();
-
 	return 0;
 }
