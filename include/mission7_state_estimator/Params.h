@@ -18,4 +18,6 @@
 #define BASE_FRAME "base_link"
 #define LIDAR_FRAME "lidar_link"
 
+#define JACOBIAN_DELTA 1e-3
+
 #endif /* MISSION7_STATE_ESTIMATOR_INCLUDE_MISSION7_STATE_ESTIMATOR_PARAMS_H_ */

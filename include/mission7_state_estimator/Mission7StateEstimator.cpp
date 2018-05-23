@@ -28,7 +28,8 @@ void Mission7StateEstimator::main_loop(){
 	while(ros::ok()){
 		ros::spinOnce();
 
-		//TODO update using measurements
+		//update using measurements
+		this->updateState();	
 
 		loop_rate.sleep();
 	}
