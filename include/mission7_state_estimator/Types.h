@@ -233,12 +233,11 @@ public:
 
 //Generic Measurement
 struct GenericMeasurement{
-private:
+public:
 	sensor_msgs::Imu imu_msg;
 	sensor_msgs::Range range_msg;
 	nav_msgs::Odometry odom_msg;
 
-public:
 	enum MeasurementType{
 		IMU,
 		ODOM,

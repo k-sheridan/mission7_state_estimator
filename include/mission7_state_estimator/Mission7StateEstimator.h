@@ -16,6 +16,7 @@
 #include <deque>
 
 #include <tf/transform_listener.h>
+#include <tf/tf.h>
 
 #include "Params.h"
 #include "Types.h"
@@ -42,9 +43,15 @@ public:
 
 	void updateState();
 
+	void update(GenericMeasurement z);
+
 	void IMUUpdate(sensor_msgs::Imu);
 	void odomUpdate(nav_msgs::Odometry);
 	void rangeUpdate(sensor_msgs::Range);
+
+	Eigen::Matrix<double, 6, 1> IMUMeasurement(QuadState x);
+	Eigen::Matrix<double, 6, 1> odomMeasurement(QuadState x);
+	double rangeMeasurement(QuadState x, tf::Transform b2l);
 
 	void publishQuadOdometry();
 

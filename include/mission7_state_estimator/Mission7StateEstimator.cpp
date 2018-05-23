@@ -35,5 +35,5 @@ void Mission7StateEstimator::main_loop(){
 }
 
 void Mission7StateEstimator::publishQuadOdometry(){
-		sensor_msgs::Odometry odom;
+		nav_msgs::Odometry odom;
 }
